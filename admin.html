@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HACKER OFFICE — Admin</title>
+<style>
+body{margin:0;background:#020604;color:#effff4;font-family:Arial}.wrap{max-width:700px;margin:auto;padding:20px 14px}.logo{color:#39ff88;font-size:27px;font-weight:900;text-align:center}.card{background:#07110b;border:1px solid #17472d;border-radius:16px;padding:16px;margin:12px 0}label{display:block;font-size:12px;color:#9ab2a2;margin:10px 0 5px}input{width:100%;box-sizing:border-box;padding:12px;background:#010503;color:white;border:1px solid #245538;border-radius:9px}button{padding:11px 14px;border-radius:9px;border:0;font-weight:800;margin:5px 4px 0 0}.save{background:#39ff88}.ghost{background:#102017;color:white;border:1px solid #245538}.danger{background:#ff5f6d}.hidden{display:none}.pkg{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:7px 0}.order{border:1px solid #163d27;border-radius:10px;padding:10px;margin:7px 0;font-size:12px}.muted{color:#82998b;font-size:11px}.top{display:flex;justify-content:space-between;align-items:center}
+</style></head><body><div class="wrap">
+<div class="logo">HACKER OFFICE — ADMIN</div>
+<div id="login" class="card"><h3>🔐 Admin Login</h3><input id="pass" type="password" placeholder="Password"><button class="save" onclick="login()">LOGIN</button><div class="muted">Default password: admin123 — change it in the code before publishing.</div></div>
+<div id="panel" class="hidden">
+<section class="card"><div class="top"><h3>⚙️ Store Settings</h3><button class="ghost" onclick="logout()">Logout</button></div>
+<label>UPI ID</label><input id="upi">
+<label>Package 1</label><div class="pkg"><input id="n0"><input id="v0"></div>
+<label>Package 2</label><div class="pkg"><input id="n1"><input id="v1"></div>
+<label>Package 3</label><div class="pkg"><input id="n2"><input id="v2"></div>
+<label>Package 4</label><div class="pkg"><input id="n3"><input id="v3"></div>
+<button class="save" onclick="save()">💾 SAVE SETTINGS</button><button class="ghost" onclick="resetSettings()">RESET DEFAULTS</button></section>
+<section class="card"><div class="top"><h3>🧾 Orders</h3><button class="danger" onclick="clearOrders()">Clear</button></div><div id="orders"></div></section>
+<section class="card"><h3>🔗 Open Store</h3><div class="muted">Put this admin.html beside index.html on GitHub Pages. Your storefront is index.html.</div></section>
+</div></div>
+<script>
+const defaults={upi:"8006485383-2@ybl",packages:[["100 Likes","₹10"],["500 Likes","₹35"],["1,000 Likes","₹60"],["5,000 Likes","₹250"]]};
+function login(){if(pass.value==="admin123"){sessionStorage.hkoAdmin="1";show()}else alert("Wrong password")}
+function show(){loginBox();load()}
+function loginBox(){document.getElementById("login").classList.add("hidden");panel.classList.remove("hidden")}
+function logout(){sessionStorage.removeItem("hkoAdmin");location.reload()}
+function get(){return JSON.parse(localStorage.getItem("hkoSettings")||"null")||defaults}
+function load(){let d=get();upi.value=d.upi;d.packages.forEach((p,i)=>{document.getElementById("n"+i).value=p[0];document.getElementById("v"+i).value=p[1]});let os=JSON.parse(localStorage.getItem("hkoOrders")||"[]");orders.innerHTML=os.length?os.map(o=>`<div class="order"><b>${o.id}</b><br>UID: ${o.uid}<br>${o.package} • ${o.price}<br><span class="muted">${o.time}</span></div>`).join(""):"<div class='muted'>No orders yet.</div>"}
+function save(){let d={upi:upi.value.trim(),packages:[0,1,2,3].map(i=>[document.getElementById("n"+i).value.trim(),document.getElementById("v"+i).value.trim()])};if(!d.upi||d.packages.some(x=>!x[0]||!x[1]))return alert("Fill all fields");localStorage.setItem("hkoSettings",JSON.stringify(d));alert("Saved. Refresh the store tab.");load()}
+function resetSettings(){localStorage.setItem("hkoSettings",JSON.stringify(defaults));load()}
+function clearOrders(){if(confirm("Delete all local orders?")){localStorage.removeItem("hkoOrders");load()}}
+if(sessionStorage.hkoAdmin==="1")show();
+</script></body></html>

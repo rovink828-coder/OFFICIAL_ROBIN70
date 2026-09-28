@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HACKER OFFICE</title>
+<style>
+body{margin:0;background:#020604;color:#effff4;font-family:Arial,sans-serif}.wrap{max-width:620px;margin:auto;padding:20px 14px}.logo{text-align:center;color:#39ff88;font-size:30px;font-weight:900;text-shadow:0 0 20px #39ff88}.sub{text-align:center;color:#81988b;font-size:12px;margin:8px 0 20px}.card{background:#07110b;border:1px solid #17472d;border-radius:17px;padding:16px;margin:12px 0}h2{font-size:18px}select,input{width:100%;padding:13px;box-sizing:border-box;border-radius:10px;background:#010503;color:white;border:1px solid #245538}button{padding:13px;border:0;border-radius:10px;font-weight:800;cursor:pointer}.primary{background:#39ff88;color:#00170a}.ghost{background:#0d1b12;color:#fff;border:1px solid #245538}.row{display:flex;gap:8px}.row>*{flex:1}.profile{display:none;margin-top:12px;padding:12px;border:1px solid #245538;border-radius:12px}.packages{display:grid;grid-template-columns:1fr 1fr;gap:8px}.pkg{padding:13px;border:1px solid #23472f;border-radius:12px}.pkg b{display:block;color:#39ff88}.pkg.active{border-color:#39ff88}.upi{text-align:center;font-size:18px;font-weight:900;color:#39ff88;margin:15px 0}.small{font-size:11px;color:#81988b}.status{display:none;margin-top:10px;padding:10px;color:#8dffb8;background:#061b0d;border-radius:9px}footer{text-align:center;color:#496d56;font-size:10px}
+</style></head><body><div class="wrap">
+<div class="logo">HACKER OFFICE ☠</div><div class="sub">FREE FIRE • UID LOOKUP • SERVICE PANEL</div>
+<section class="card"><h2>🌍 Region</h2><select id="region"><option>IND — India</option><option>BD — Bangladesh</option><option>SG — Singapore</option><option>ID — Indonesia</option></select></section>
+<section class="card"><h2>🔎 Find Player</h2><div class="row"><input id="uid" inputmode="numeric" placeholder="Enter Free Fire UID"><button class="primary" onclick="find()">SEARCH</button></div><div class="small">Demo player lookup UI.</div><div class="profile" id="profile"></div></section>
+<section class="card"><h2>❤️ Like Packages</h2><div class="packages" id="packages"></div></section>
+<section class="card"><h2>💳 Payment</h2><div class="small">UID: <b id="puid">—</b> • Package: <b id="ppkg">—</b> • Total: <b id="price">—</b></div><div class="upi" id="upi"></div><div class="row"><button class="ghost" onclick="copyUPI()">COPY UPI</button><button class="primary" onclick="paid()">I HAVE PAID</button></div><div class="status" id="status"></div></section>
+<footer>© 2026 HACKER OFFICE</footer></div>
+<script>
+const defaults={upi:"8006485383-2@ybl",packages:[["100 Likes","₹10"],["500 Likes","₹35"],["1,000 Likes","₹60"],["5,000 Likes","₹250"]]};
+let data=JSON.parse(localStorage.getItem("hkoSettings")||"null")||defaults, selected=0;
+function render(){data=JSON.parse(localStorage.getItem("hkoSettings")||"null")||defaults;upi.textContent=data.upi;packages.innerHTML=data.packages.map((p,i)=>`<div class="pkg ${i==0?"active":""}" onclick="pick(${i})"><b>${p[0]}</b><span>${p[1]}</span></div>`).join("");pick(0)}
+function pick(i){selected=i;document.querySelectorAll(".pkg").forEach((x,j)=>x.classList.toggle("active",j==i));ppkg.textContent=data.packages[i][0];price.textContent=data.packages[i][1]}
+function find(){let u=uid.value.trim();if(!/^\d{5,}$/.test(u))return alert("Enter a valid UID");profile.style.display="block";profile.innerHTML="<b style='color:#39ff88'>Player "+u.slice(-4)+"</b><br><span class='small'>UID: "+u+" • Region: "+region.value+"</span>";puid.textContent=u}
+function copyUPI(){navigator.clipboard?.writeText(data.upi);alert("UPI copied")}
+function paid(){if(!/^\d{5,}$/.test(uid.value.trim()))return alert("Enter UID first");let orders=JSON.parse(localStorage.getItem("hkoOrders")||"[]");let o={id:"HKO"+Date.now().toString().slice(-7),uid:uid.value.trim(),package:data.packages[selected][0],price:data.packages[selected][1],time:new Date().toLocaleString()};orders.unshift(o);localStorage.setItem("hkoOrders",JSON.stringify(orders));status.style.display="block";status.textContent="Order "+o.id+" created. Please verify payment before fulfilling."; }
+render();
+</script></body></html>
